@@ -26,7 +26,7 @@ build:
       - build
       - .gradle
 
-java:
+run:
   stage: run
   script: ./gradlew run
   cache:
@@ -36,7 +36,7 @@ java:
       - build
       - .gradle
 
-java:
+test:
   stage: test
   script: ./gradlew test
   artifacts:
