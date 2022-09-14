@@ -1,4 +1,4 @@
-# Mandelbrot
+# ELEVATOR-CORRECTION
 
 ## Description du projet 
 
