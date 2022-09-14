@@ -1,6 +1,7 @@
 package elevator;
 
-import static elevator.IElevator.State.STOP;
+import static elevator.IElevator.State.ERROR;
+import static elevator.IElevator.State.UP;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import org.junit.jupiter.api.Test;
@@ -9,33 +10,23 @@ public class TestAutomaticElevator {
 
 	@Test
 	public void testAutomaticElevator() throws Exception {
-		// 10 étages et mode automatique
-		var e = new ElevatorSimulator(10, false);
-		// initialement, l'ascenseur est au RdC
-		int lift = 0;
+		// 3 étages en mode automatique
+		var e = new ElevatorSimulator(3, false);
 		// activer la montée
 		e.up();
 		// surveiller l'évolution de l'ascenseur
-		for (; (e.getState() != STOP);) {
+		while (e.getState() == UP) {
+			System.out.printf("level = %3.2f\n", e.getLevel());
 			Thread.sleep(100);
-			// tester le franchissement d'étage
-			if (e.getAndResetStageSensor()) {
-				// au troisième étage, stopper au suivant
-				if (++lift == 3) {
-					e.stopNext();
-				}
-			}
 		}
 		e.stopSimulator();
 
 		// l'ascenseur est au 4ème
-		assertEquals(4.0, e.getLevel());
-		// l'ascenseur est au 4ème
-		assertEquals(4, lift);
+		assertEquals(3.0, e.getLevel());
 		// l'ascenseur est à l'arret
-		assertEquals(STOP, e.getState());
+		assertEquals(ERROR, e.getState());
 		// les étapes
-		assertEquals("-S0-U0-U1-U2-U3-O4-S4", e.getEvents());
+//		assertEquals("à déterminer", e.getEvents());
 	}
 
 }
