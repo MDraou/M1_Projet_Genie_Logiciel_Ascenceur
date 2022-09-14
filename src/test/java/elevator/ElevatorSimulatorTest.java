@@ -1,9 +1,10 @@
-import elevator.ElevatorSimulator;
-import org.junit.jupiter.api.Test;
+package elevator;
 import static elevator.IElevator.State.STOP;
-import static org.assertj.core.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class PanelSimulatorTest {
+import org.junit.jupiter.api.Test;
+
+public class ElevatorSimulatorTest {
 
   @Test
   void testGetEvents(){
@@ -23,10 +24,12 @@ public class PanelSimulatorTest {
 
     // vérifions que tout est OK
     // (3 étages * 3 mètres * 5 étapes) + 25 étapes pour les portes
-    boolean ok = (((3 * 3 * 5) + 25) == nbSteps);
-    ok = ok && (3.0 == s.getLevel());
-    ok = ok && (STOP == s.getState());
-    ok = ok && ("-S0-U0-U1-U2-O3-S3".equals(s.getEvents()));
-    assertThat(ok).isTrue();
+    assertEquals(70, nbSteps);
+    // l'ascenseur doit être au 3ème
+    assertEquals(3.0, s.getLevel());
+    // l'ascenseur doit être à l'arret
+    assertEquals(STOP, s.getState());
+    // les étapes sont
+    assertEquals("-S0-U0-U1-U2-O3-S3", s.getEvents());
   }
 }
