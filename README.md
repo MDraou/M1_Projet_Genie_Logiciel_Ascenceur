@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 # Simulateur d'ascenseur
+=======
+# ELEVATOR-CORRECTION
+>>>>>>> d5629ef1ce17a21a223e99e47aa887ea27c1501d
 
 ## Description du projet 
 

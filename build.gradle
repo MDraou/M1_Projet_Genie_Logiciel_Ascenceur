@@ -27,7 +27,7 @@ dependencies {
 }
 
 application {
-    mainClass = 'elevator.TestAutomaticElevator'
+    mainClass = 'elevator.MainElevator'
 }
 
 test {
