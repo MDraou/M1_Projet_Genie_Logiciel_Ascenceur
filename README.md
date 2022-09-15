@@ -1,8 +1,8 @@
-# Mandelbrot
+# Simulateur d'ascenseur
 
 ## Description du projet 
 
-Projet correction du simulateur d'ascenseur.
+Projet du simulateur d'ascenseur.
 
-[Docuementation](https://jean-luc-massat.pedaweb.univ-amu.fr/ens/gl/elevator.html)
+[Documentation](https://jean-luc-massat.pedaweb.univ-amu.fr/ens/gl/elevator.html)
 
