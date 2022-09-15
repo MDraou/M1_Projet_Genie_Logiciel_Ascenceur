@@ -26,7 +26,7 @@ public class TestAutomaticElevator {
 		// l'ascenseur est en erreur
 		assertEquals(ERROR, e.getState());
 		// les étapes
-//		assertEquals("à déterminer", e.getEvents());
+		//	assertEquals("à déterminer", e.getEvents());
 	}
 
 }
