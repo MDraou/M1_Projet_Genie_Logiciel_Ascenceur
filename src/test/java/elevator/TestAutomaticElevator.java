@@ -21,7 +21,7 @@ public class TestAutomaticElevator {
 		}
 		e.stopSimulator();
 
-		// l'ascenseur est au 3ème
+		// l'ascenseur est au 3ème étage
 		assertEquals(3.0, e.getLevel());
 		// l'ascenseur est à l'arret
 		assertEquals(ERROR, e.getState());
