@@ -2,32 +2,53 @@ package elevator;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 
 import static elevator.IElevator.State.*;
 
 public class Scheduler {
-    private final ArrayList<Request> requests = new ArrayList<>();
+    private final ArrayList<Integer> upRequests = new ArrayList<>();
+    private final ArrayList<Integer> downRequests = new ArrayList<>();
 
     public void save(int floor, IElevator.State state) {
-        if (state != UP && state != DOWN) throw new IllegalStateException("Must be UP or DOWN");
-        Request request = new Request(state, floor);
-        if (!requests.contains(request)) requests.add(request);
+        switch (state) {
+            case UP -> {
+                if (!upRequests.contains(floor)) upRequests.add(floor);
+                Collections.sort(upRequests);
+            }
+            case DOWN -> {
+                if (!downRequests.contains(floor)) downRequests.add(floor);
+                Collections.sort(downRequests);
+            }
+            default -> throw new IllegalStateException("Must be UP or DOWN");
+        }
     }
 
     public void save(int floor) {
-        Request request = new Request(null, floor);
-        if (!requests.contains(request)) requests.add(request);
+        if (!upRequests.contains(floor)) upRequests.add(floor);
+        if (!downRequests.contains(floor)) downRequests.add(floor);
     }
 
-    public Request next(int floor, IElevator.State state) {
-        if (state != UP && state != DOWN) throw new IllegalStateException("Must be UP or DOWN");
-        if (requests.isEmpty()) return null;
-        Collections.sort(requests);
-        ArrayList<Request> sameState = new ArrayList<>(requests);
-        sameState.removeIf(e -> e.getState() != state);
-        if (sameState.isEmpty()) return;
-        else {
-
+    public Integer next(int floor, IElevator.State state) {
+        if (upRequests.isEmpty() && downRequests.isEmpty()) return -1;
+        ArrayList<Integer> floors = (state == UP) ? upRequests : downRequests;
+        switch (state) {
+            case UP -> {
+                if (upRequests.isEmpty()) return downRequests.get(0);
+                floors.removeIf(f -> (f <= floor));
+                return floors.get(0);
+            }
+            case DOWN -> {
+                if (downRequests.isEmpty()) return upRequests.get(upRequests.size() - 1);
+                floors.removeIf(f -> (f >= floor));
+                return floors.get(floors.size() - 1);
+            }
+            default -> throw new IllegalStateException("Must be UP or DOWN");
         }
+    }
+
+    public void remove(int floor) {
+        upRequests.removeIf(f -> (f == floor));
+        downRequests.removeIf(f -> (f == floor));
     }
 }
