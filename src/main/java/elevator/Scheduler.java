@@ -2,7 +2,6 @@ package elevator;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.List;
 
 import static elevator.IElevator.State.*;
 
@@ -13,20 +12,19 @@ public class Scheduler {
     public void save(int floor, IElevator.State state) {
         switch (state) {
             case UP -> {
-                if (!upRequests.contains(floor)) upRequests.add(floor);
-                Collections.sort(upRequests);
+                if (!upRequests.contains(floor)) {
+                    upRequests.add(floor);
+                    Collections.sort(upRequests);
+                }
             }
             case DOWN -> {
-                if (!downRequests.contains(floor)) downRequests.add(floor);
-                Collections.sort(downRequests);
+                if (!downRequests.contains(floor)) {
+                    downRequests.add(floor);
+                    Collections.sort(downRequests);
+                }
             }
             default -> throw new IllegalStateException("Must be UP or DOWN");
         }
-    }
-
-    public void save(int floor) {
-        if (!upRequests.contains(floor)) upRequests.add(floor);
-        if (!downRequests.contains(floor)) downRequests.add(floor);
     }
 
     public Integer next(int floor, IElevator.State state) {
@@ -50,5 +48,10 @@ public class Scheduler {
     public void remove(int floor) {
         upRequests.removeIf(f -> (f == floor));
         downRequests.removeIf(f -> (f == floor));
+    }
+
+    public void removeAll() {
+        upRequests.clear();
+        downRequests.clear();
     }
 }
