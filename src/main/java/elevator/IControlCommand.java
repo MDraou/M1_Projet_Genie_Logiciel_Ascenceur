@@ -2,9 +2,9 @@ package elevator;
 
 public interface IControlCommand {
 
-    void saveUp();
-    void saveDown();
-    void saveStay();
+    void saveUp(int floor);
+    void saveDown(int floor);
+    void saveCabin(int floor);
     void checkState();
     void checkAndProcess();
 }

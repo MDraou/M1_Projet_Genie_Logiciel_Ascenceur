@@ -17,18 +17,23 @@ public class ControlCommand implements IControlCommand {
     }
 
     @Override
-    public void saveUp() {
-
+    public void saveUp(int floor) {
+        scheduler.save(floor, UP);
+        panel.setUpLight(floor, true);
     }
 
     @Override
-    public void saveDown() {
-
+    public void saveDown(int floor) {
+        scheduler.save(floor, DOWN);
+        panel.setDownLight(floor, true);
     }
 
     @Override
-    public void saveStay() {
-
+    public void saveCabin(int floor) {
+        if (floor > this.floor) scheduler.save(floor, UP);
+        else if (floor < this.floor) scheduler.save(floor, DOWN);
+        else scheduler.save(floor, dir);
+        panel.setFloorLight(floor, true);
     }
 
     @Override
@@ -55,8 +60,10 @@ public class ControlCommand implements IControlCommand {
                     panel.setFloorLight(floor, panel.getAndResetFloorButton(floor));
                     elevator.openDoor();
                 }
-                if (scheduler.next(floor, elevator.getState()) > floor) { elevator.up(); dir = UP; }
-                if (scheduler.next(floor, elevator.getState()) < floor) { elevator.down(); dir = DOWN; }
+                else {
+                    if (scheduler.next(floor, elevator.getState()) > floor) { elevator.up(); dir = UP; }
+                    if (scheduler.next(floor, elevator.getState()) < floor) { elevator.down(); dir = DOWN; }
+                }
             }
             case ERROR -> {}
             case RESET -> {}
