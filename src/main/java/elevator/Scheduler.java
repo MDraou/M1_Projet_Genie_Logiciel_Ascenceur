@@ -29,17 +29,17 @@ public class Scheduler {
 
     public Integer next(int floor, IElevator.State state) {
         if (upRequests.isEmpty() && downRequests.isEmpty()) return -1;
-        ArrayList<Integer> floors = (state == UP) ? upRequests : downRequests;
+        ArrayList<Integer> floors = new ArrayList<>();
         switch (state) {
             case UP -> {
-                if (upRequests.isEmpty()) return downRequests.get(0);
-                floors.removeIf(f -> (f <= floor));
-                return floors.get(0);
+                floors.addAll(upRequests);
+                floors.removeIf(f -> (f < floor));
+                return (floors.isEmpty()) ? downRequests.get(downRequests.size() - 1) : floors.get(0);
             }
             case DOWN -> {
-                if (downRequests.isEmpty()) return upRequests.get(upRequests.size() - 1);
-                floors.removeIf(f -> (f >= floor));
-                return floors.get(floors.size() - 1);
+                floors.addAll(downRequests);
+                floors.removeIf(f -> (f > floor));
+                return (floors.isEmpty()) ? upRequests.get(0) : floors.get(floors.size() - 1);
             }
             default -> throw new IllegalStateException("Must be UP or DOWN");
         }
