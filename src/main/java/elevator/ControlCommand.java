@@ -57,7 +57,7 @@ public class ControlCommand implements IControlCommand {
             case STOP -> {
                 if (scheduler.next(floor, dir) == floor) {
                     scheduler.remove(floor);
-                    panel.setFloorLight(floor, panel.getAndResetFloorButton(floor));
+                    panel.setFloorLight(floor, false);
                     elevator.openDoor();
                 }
                 else {
@@ -65,9 +65,7 @@ public class ControlCommand implements IControlCommand {
                     if (scheduler.next(floor, elevator.getState()) < floor) { elevator.down(); dir = DOWN; }
                 }
             }
-            case ERROR -> {}
-            case RESET -> {}
-            case DOOR -> {}
+            case ERROR, RESET, DOOR -> {}
         }
     }
 }
