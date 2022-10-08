@@ -34,12 +34,14 @@ public class Scheduler {
             case UP -> {
                 floors.addAll(upRequests);
                 floors.removeIf(f -> (f < floor));
-                return (floors.isEmpty()) ? downRequests.get(downRequests.size() - 1) : floors.get(0);
+                try { return (floors.isEmpty()) ? downRequests.get(downRequests.size() - 1) : floors.get(0); }
+                catch (IndexOutOfBoundsException e) { return upRequests.get(0); }
             }
             case DOWN -> {
                 floors.addAll(downRequests);
                 floors.removeIf(f -> (f > floor));
-                return (floors.isEmpty()) ? upRequests.get(0) : floors.get(floors.size() - 1);
+                try { return (floors.isEmpty()) ? upRequests.get(0) : floors.get(floors.size() - 1); }
+                catch (IndexOutOfBoundsException e) { return downRequests.get(downRequests.size() - 1); }
             }
             default -> throw new IllegalStateException("Must be UP or DOWN");
         }

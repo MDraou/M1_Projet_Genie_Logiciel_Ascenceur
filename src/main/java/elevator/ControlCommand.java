@@ -8,7 +8,7 @@ public class ControlCommand implements IControlCommand {
     private final IElevator elevator;
     private final IPanel panel;
     private int floor = 0;
-    private IElevator.State dir;
+    private IElevator.State dir = UP;
 
     public ControlCommand(Scheduler scheduler, IElevator elevator, IPanel panel) {
         this.scheduler = scheduler;
@@ -39,33 +39,42 @@ public class ControlCommand implements IControlCommand {
     @Override
     public void checkState() {
         if (panel.getAndResetStopButton()) { elevator.halt(); scheduler.removeAll(); }
-        if (panel.getAndResetInitButton()) {  elevator.reset(); }
+        if (panel.getAndResetInitButton()) { elevator.reset(); scheduler.removeAll(); }
     }
 
     @Override
     public void checkAndProcess() {
-        checkState();
+        System.out.println(floor + "   " + elevator.getState() + dir);
+        if (panel.getAndResetButtonsSensor()) checkState();
+        if (elevator.getAndResetStageSensor()) floor += (dir == UP) ? 1 : -1;
+        int next = scheduler.next(floor, dir);
         switch (elevator.getState()) {
-            case UP -> {
-                if (elevator.getAndResetStageSensor()) floor += 1;
-                if (scheduler.next(floor, elevator.getState()) - floor == 1) elevator.stopNext();
-            }
-            case DOWN -> {
-                if (elevator.getAndResetStageSensor()) floor -= 1;
-                if (floor - scheduler.next(floor, elevator.getState()) == 1) elevator.stopNext();
-            }
+            case UP -> { if (next - floor == 1) elevator.stopNext(); }
+            case DOWN -> { if (floor - next == 1) elevator.stopNext(); }
             case STOP -> {
-                if (scheduler.next(floor, dir) == floor) {
+                if (next == -1) break ;
+                if (next == floor) {
                     scheduler.remove(floor);
-                    panel.setFloorLight(floor, false);
-                    elevator.openDoor();
+                    switchOffLights(floor);
                 }
                 else {
-                    if (scheduler.next(floor, elevator.getState()) > floor) { elevator.up(); dir = UP; }
-                    if (scheduler.next(floor, elevator.getState()) < floor) { elevator.down(); dir = DOWN; }
+                    if (next > floor) { elevator.up(); dir = UP; }
+                    if (next < floor) { elevator.down(); dir = DOWN; }
                 }
             }
-            case ERROR, RESET, DOOR -> {}
+            case RESET -> dir = DOWN;
+            case DOOR, ERROR -> {}
         }
+        try { Thread.sleep(200); } catch (InterruptedException e) { throw new RuntimeException(e); }
+    }
+
+    public int getFloor() {
+        return floor;
+    }
+
+    private void switchOffLights(int floor) {
+        panel.setFloorLight(floor, false);
+        panel.setUpLight(floor, false);
+        panel.setDownLight(floor, false);
     }
 }
